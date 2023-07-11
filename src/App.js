@@ -1,18 +1,37 @@
 import { useState } from "react";
 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: false },
-  { id: 3, description: "Charger", quantity: 1, packed: true },
-];
+// const initialItems = [
+//   { id: 1, description: "Passports", quantity: 2, packed: false },
+//   { id: 2, description: "Socks", quantity: 12, packed: false },
+//   { id: 3, description: "Charger", quantity: 1, packed: true },
+// ];
 
 export default function App() {
+  const [items, setItems] = useState([]);
+  function handleAddItem(item) {
+    setItems((items) => [...items, item]);
+  }
+  function handDeleteItem(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
+  function handUpdateItem(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
-      <Stats />
+      <Form onAddItems={handleAddItem} />
+      <PackingList
+        onDeleteItem={handDeleteItem}
+        onUpdateItem={handUpdateItem}
+        items={items}
+      />
+      <Stats items={items} />
     </div>
   );
 }
@@ -24,22 +43,25 @@ function Logo() {
   return <h1>🏝️ Far Away 💼</h1>;
 }
 // 2- enter data (Form section)
-function Form() {
+function Form({ onAddItems }) {
   // control elements
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [countID, setCountID] = useState(100540);
+
   function handleSubmit(event) {
-    let countID = 1050;
+    setCountID((value) => value + 3030);
     event.preventDefault();
-    // console.log("event Data");
-    // console.log(event);
+
     if (!description) return;
     const newPackedItem = {
       description,
       quantity,
       packed: false,
-      id: countID + 5135,
+      id: countID,
     };
+    onAddItems(newPackedItem);
+
     setDescription("");
     setQuantity(1);
   }
@@ -70,12 +92,17 @@ function Form() {
   );
 }
 // 3- listing of stuff (List items section)
-function PackingList() {
+function PackingList({ items, onDeleteItem, onUpdateItem }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((singleItem) => (
-          <Item key={singleItem.id} item={singleItem} />
+        {items.map((singleItem) => (
+          <Item
+            handleDeleteItem={onDeleteItem}
+            handleUpdateItem={onUpdateItem}
+            key={singleItem.id}
+            item={singleItem}
+          />
         ))}
       </ul>
     </div>
@@ -83,22 +110,39 @@ function PackingList() {
 }
 
 //--- Single Item Component ---
-function Item({ item }) {
+function Item({ item, handleDeleteItem, handleUpdateItem }) {
   return (
     <li>
-      <input type="checkbox" />
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => handleUpdateItem(item.id)}
+      />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         ({item.quantity}) {item.description}
       </span>
-      <button>❌</button>
+      <button onClick={() => handleDeleteItem(item.id)}>❌</button>
     </li>
   );
 }
 // 4- statistics (how much we finish section)
-function Stats() {
+function Stats({ items, packedItems }) {
+  if (!items.length)
+    return (
+      <p className="stats">
+        <em>Start adding some items to your packing list 🚀</em>
+      </p>
+    );
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const percentage = Math.round((numPacked / numItems) * 100);
   return (
     <footer className="stats">
-      <em>💼 You have X items on your list, and you already packed X (X %)</em>
+      <em>
+        {percentage === 100
+          ? "You got everything! Ready to go ✈️"
+          : ` 💼 You have ${numItems} items on your list, and you already packed ${numPacked} (${percentage}%)`}
+      </em>
     </footer>
   );
 }
