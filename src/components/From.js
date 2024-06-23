@@ -18,9 +18,6 @@ export default function Form({ onAddItems }) {
       packed: false,
       id: uuidv4(),
     };
-    console.log("-------------------");
-    console.log("newPackedItem");
-    console.log(newPackedItem);
     onAddItems(newPackedItem);
 
     setDescription("");
