@@ -1,14 +1,14 @@
 import { useState } from "react";
-
+import { v4 as uuidv4 } from "uuid";
 // 2- enter data (Form section)
 export default function Form({ onAddItems }) {
   // control elements
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [countID, setCountID] = useState(100540);
+  // const [countID, setCountID] = useState(100540);
 
   function handleSubmit(event) {
-    setCountID((value) => value + 3030);
+    // setCountID((value) => value + 3030);
     event.preventDefault();
 
     if (!description) return;
@@ -16,8 +16,11 @@ export default function Form({ onAddItems }) {
       description,
       quantity,
       packed: false,
-      id: countID,
+      id: uuidv4(),
     };
+    console.log("-------------------");
+    console.log("newPackedItem");
+    console.log(newPackedItem);
     onAddItems(newPackedItem);
 
     setDescription("");
