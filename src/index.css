@@ -45,6 +45,10 @@ h1 {
   justify-content: center;
   gap: 0.8rem;
 }
+.fieldsBlock {
+  display: flex;
+  gap: 10px;
+}
 
 h3 {
   margin-right: 1.6rem;
@@ -131,4 +135,23 @@ input[type="checkbox"] {
   text-align: center;
   font-weight: 700;
   padding: 3.2rem 0;
+}
+
+/* ! ######### */
+/* ! Responsiveness Steps */
+@media screen and (max-width: 870px) {
+  h1 {
+    text-align: center;
+    background-color: #f4a226;
+    font-family: "Monoton";
+    font-size: 4rem;
+    text-transform: uppercase;
+    font-weight: 400;
+    word-spacing: 20px;
+    letter-spacing: -5px;
+    padding: 1.4rem 0;
+  }
+  .add-form {
+    flex-direction: column;
+  }
 }
